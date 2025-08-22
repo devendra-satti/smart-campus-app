@@ -1,0 +1,116 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Lost & Found</h2>
+    <div>
+        <a href="/lost-found/report-lost" class="btn btn-primary me-2">
+            <i class="fas fa-plus me-1"></i>Report Lost
+        </a>
+        <a href="/lost-found/report-found" class="btn btn-success">
+            <i class="fas fa-plus me-1"></i>Report Found
+        </a>
+    </div>
+</div>
+
+<!-- Search and Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="all" <%= currentFilters.category === 'all' ? 'selected' : '' %>>All Categories</option>
+                    <option value="electronics" <%= currentFilters.category === 'electronics' ? 'selected' : '' %>>Electronics</option>
+                    <option value="books" <%= currentFilters.category === 'books' ? 'selected' : '' %>>Books</option>
+                    <option value="clothing" <%= currentFilters.category === 'clothing' ? 'selected' : '' %>>Clothing</option>
+                    <option value="accessories" <%= currentFilters.category === 'accessories' ? 'selected' : '' %>>Accessories</option>
+                    <option value="documents" <%= currentFilters.category === 'documents' ? 'selected' : '' %>>Documents</option>
+                    <option value="other" <%= currentFilters.category === 'other' ? 'selected' : '' %>>Other</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="all" <%= currentFilters.status === 'all' ? 'selected' : '' %>>All Status</option>
+                    <option value="lost" <%= currentFilters.status === 'lost' ? 'selected' : '' %>>Lost</option>
+                    <option value="found" <%= currentFilters.status === 'found' ? 'selected' : '' %>>Found</option>
+                    <option value="returned" <%= currentFilters.status === 'returned' ? 'selected' : '' %>>Returned</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Search</label>
+                <div class="input-group">
+                    <input type="search" name="search" class="form-control" 
+                           placeholder="Search items..." value="<%= currentFilters.search || '' %>">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Items List -->
+<% if (items && items.length > 0) { %>
+    <div class="row">
+        <% items.forEach(item => { %>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="badge bg-<%= 
+                            item.status === 'lost' ? 'danger' : 
+                            item.status === 'found' ? 'success' : 'secondary' 
+                        %>">
+                            <%= item.status.toUpperCase() %>
+                        </span>
+                        <small class="text-muted"><%= new Date(item.createdAt).toLocaleDateString() %></small>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><%= item.itemName %></h5>
+                        <p class="card-text text-muted"><%= item.description %></p>
+                        
+                        <div class="mb-2">
+                            <strong>Category:</strong>
+                            <span class="badge bg-info"><%= item.category %></span>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <strong>Location:</strong>
+                            <span class="text-muted"><%= item.locationLost %></span>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <strong>Date Lost/Found:</strong>
+                            <span class="text-muted"><%= new Date(item.dateLost).toLocaleDateString() %></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Contact:</strong>
+                            <span class="text-muted"><%= item.contactInfo %></span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                Reported by: <%= item.reportedBy.username %>
+                            </small>
+                            <% if (item.status === 'found' && username !== item.reportedBy.username) { %>
+                                <form method="POST" action="/lost-found/<%= item._id %>/claim">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-check me-1"></i>Claim
+                                    </button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+<% } else { %>
+    <div class="text-center py-5">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <h4>No items found</h4>
+        <p class="text-muted">Try adjusting your search criteria or report a new item.</p>
+    </div>
+<% } %>

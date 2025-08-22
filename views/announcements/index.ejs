@@ -1,0 +1,192 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Announcements</h2>
+    <a href="/announcements/create" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i>Create Announcement
+    </a>
+</div>
+
+<!-- Search and Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="all" <%= currentFilters.category === 'all' ? 'selected' : '' %>>All Categories</option>
+                    <option value="academic" <%= currentFilters.category === 'academic' ? 'selected' : '' %>>Academic</option>
+                    <option value="event" <%= currentFilters.category === 'event' ? 'selected' : '' %>>Events</option>
+                    <option value="important" <%= currentFilters.category === 'important' ? 'selected' : '' %>>Important</option>
+                    <option value="general" <%= currentFilters.category === 'general' ? 'selected' : '' %>>General</option>
+                    <option value="emergency" <%= currentFilters.category === 'emergency' ? 'selected' : '' %>>Emergency</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="all" <%= currentFilters.status === 'all' ? 'selected' : '' %>>All Status</option>
+                    <option value="active" <%= currentFilters.status === 'active' ? 'selected' : '' %>>Active</option>
+                    <option value="expired" <%= currentFilters.status === 'expired' ? 'selected' : '' %>>Expired</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Search</label>
+                <div class="input-group">
+                    <input type="search" name="search" class="form-control" 
+                           placeholder="Search announcements..." value="<%= currentFilters.search || '' %>">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Announcements List -->
+<% if (announcements && announcements.length > 0) { %>
+    <div class="row">
+        <% announcements.forEach(announcement => { %>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="badge bg-<%= 
+                            announcement.category === 'academic' ? 'primary' : 
+                            announcement.category === 'event' ? 'success' : 
+                            announcement.category === 'important' ? 'warning' : 
+                            announcement.category === 'emergency' ? 'danger' : 'secondary' 
+                        %>">
+                            <%= announcement.category.toUpperCase() %>
+                        </span>
+                        <small class="text-muted"><%= new Date(announcement.createdAt).toLocaleDateString() %></small>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><%= announcement.title %></h5>
+                        <p class="card-text"><%= announcement.content %></p>
+                        
+                        <% if (announcement.attachmentUrl) { %>
+                            <div class="mb-3">
+                                <strong>Attachment:</strong>
+                                <a href="<%= announcement.attachmentUrl %>" target="_blank" class="btn btn-sm btn-outline-primary ms-2">
+                                    <i class="fas fa-paperclip me-1"></i>View Attachment
+                                </a>
+                            </div>
+                        <% } %>
+                        
+                        <div class="mb-3">
+                            <strong>Target Audience:</strong>
+                            <span class="text-muted">
+                                <%= announcement.targetAudience === 'all' ? 'All Students' : 
+                                    announcement.targetAudience === 'faculty' ? 'Faculty Only' : 
+                                    announcement.targetAudience === 'specific' ? 'Specific Groups' : 'All' %>
+                            </span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Expires:</strong>
+                            <span class="text-muted">
+                                <% if (announcement.expiryDate) { %>
+                                    <%= new Date(announcement.expiryDate).toLocaleDateString() %>
+                                    <% if (new Date(announcement.expiryDate) < new Date()) { %>
+                                        <span class="badge bg-danger ms-2">Expired</span>
+                                    <% } else { %>
+                                        <span class="badge bg-success ms-2">Active</span>
+                                    <% } %>
+                                <% } else { %>
+                                    No expiry
+                                <% } %>
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                Posted by: <%= announcement.postedBy.username %>
+                            </small>
+                            <a href="/announcements/<%= announcement._id %>" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-info-circle me-1"></i>Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+    
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+        <nav aria-label="Announcements pagination">
+            <ul class="pagination justify-content-center">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage - 1 %>&<%= queryString %>">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                <% } %>
+                
+                <% for(let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>&<%= queryString %>"><%= i %></a>
+                    </li>
+                <% } %>
+                
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %>&<%= queryString %>">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    <% } %>
+<% } else { %>
+    <div class="text-center py-5">
+        <i class="fas fa-bullhorn fa-3x text-muted mb-3"></i>
+        <h4>No announcements found</h4>
+        <p class="text-muted">Try adjusting your search criteria or check back later.</p>
+        <a href="/announcements/create" class="btn btn-primary mt-2">
+            <i class="fas fa-plus me-1"></i>Create Announcement
+        </a>
+    </div>
+<% } %>
+
+<!-- Quick Stats -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Announcements Overview</h5>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="p-3 border rounded">
+                    <i class="fas fa-bullhorn fa-2x text-primary mb-2"></i>
+                    <h4><%= totalAnnouncements %></h4>
+                    <small class="text-muted">Total Announcements</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="p-3 border rounded">
+                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                    <h4><%= activeAnnouncements %></h4>
+                    <small class="text-muted">Active</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="p-3 border rounded">
+                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                    <h4><%= importantAnnouncements %></h4>
+                    <small class="text-muted">Important</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="p-3 border rounded">
+                    <i class="fas fa-exclamation-circle fa-2x text-danger mb-2"></i>
+                    <h4><%= emergencyAnnouncements %></h4>
+                    <small class="text-muted">Emergency</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

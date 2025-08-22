@@ -1,0 +1,119 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Upcoming Events</h2>
+    <a href="/events/create" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i>Create Event
+    </a>
+</div>
+
+<!-- Search and Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="all" <%= currentFilters.category === 'all' ? 'selected' : '' %>>All Categories</option>
+                    <option value="academic" <%= currentFilters.category === 'academic' ? 'selected' : '' %>>Academic</option>
+                    <option value="cultural" <%= currentFilters.category === 'cultural' ? 'selected' : '' %>>Cultural</option>
+                    <option value="sports" <%= currentFilters.category === 'sports' ? 'selected' : '' %>>Sports</option>
+                    <option value="workshop" <%= currentFilters.category === 'workshop' ? 'selected' : '' %>>Workshop</option>
+                    <option value="seminar" <%= currentFilters.category === 'seminar' ? 'selected' : '' %>>Seminar</option>
+                    <option value="other" <%= currentFilters.category === 'other' ? 'selected' : '' %>>Other</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Search</label>
+                <div class="input-group">
+                    <input type="search" name="search" class="form-control" 
+                           placeholder="Search events..." value="<%= currentFilters.search || '' %>">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Events List -->
+<% if (events && events.length > 0) { %>
+    <div class="row">
+        <% events.forEach(event => { %>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <% if (event.imageUrl) { %>
+                        <img src="<%= event.imageUrl %>" class="card-img-top" alt="<%= event.title %>" style="height: 200px; object-fit: cover;">
+                    <% } else { %>
+                        <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-calendar fa-3x"></i>
+                        </div>
+                    <% } %>
+                    
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-<%= 
+                                event.category === 'academic' ? 'primary' : 
+                                event.category === 'cultural' ? 'success' : 
+                                event.category === 'sports' ? 'danger' : 
+                                event.category === 'workshop' ? 'warning' : 
+                                event.category === 'seminar' ? 'info' : 'secondary' 
+                            %>">
+                                <%= event.category %>
+                            </span>
+                            <small class="text-muted"><%= event.attendees.length %> attending</small>
+                        </div>
+                        
+                        <h5 class="card-title"><%= event.title %></h5>
+                        <p class="card-text text-muted"><%= event.description.substring(0, 100) %>...</p>
+                        
+                        <div class="mb-2">
+                            <i class="fas fa-calendar me-1 text-primary"></i>
+                            <strong><%= new Date(event.date).toLocaleDateString() %></strong>
+                            at <%= event.time %>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                            <span class="text-muted"><%= event.venue %></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <i class="fas fa-user me-1 text-success"></i>
+                            <small class="text-muted">Organized by: <%= event.organizer %></small>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="/events/<%= event._id %>" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-info-circle me-1"></i>Details
+                            </a>
+                            <% if (event.registrationLink) { %>
+                                <a href="<%= event.registrationLink %>" target="_blank" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-link me-1"></i>Register
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="/events/past" class="btn btn-outline-secondary">
+            <i class="fas fa-history me-1"></i>View Past Events
+        </a>
+    </div>
+<% } else { %>
+    <div class="text-center py-5">
+        <i class="fas fa-calendar fa-3x text-muted mb-3"></i>
+        <h4>No upcoming events</h4>
+        <p class="text-muted">Check back later for new events or create one yourself!</p>
+        <a href="/events/create" class="btn btn-primary mt-2">
+            <i class="fas fa-plus me-1"></i>Create Event
+        </a>
+    </div>
+<% } %>

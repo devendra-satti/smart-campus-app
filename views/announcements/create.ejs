@@ -1,0 +1,157 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Create Announcement</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title *</label>
+                        <input type="text" class="form-control" id="title" name="title" required 
+                               placeholder="e.g., Important Exam Schedule Update">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Content *</label>
+                        <textarea class="form-control" id="content" name="content" rows="5" required 
+                                  placeholder="Enter the announcement details..."></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Category *</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="academic">Academic</option>
+                                <option value="event">Event</option>
+                                <option value="important">Important</option>
+                                <option value="general">General</option>
+                                <option value="emergency">Emergency</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="targetAudience" class="form-label">Target Audience *</label>
+                            <select class="form-select" id="targetAudience" name="targetAudience" required>
+                                <option value="all">All Students</option>
+                                <option value="faculty">Faculty Only</option>
+                                <option value="specific">Specific Groups</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Specific groups field (shown only when targetAudience is 'specific') -->
+                    <div class="mb-3" id="specificGroupsContainer" style="display: none;">
+                        <label for="specificGroups" class="form-label">Specific Groups</label>
+                        <input type="text" class="form-control" id="specificGroups" name="specificGroups" 
+                               placeholder="e.g., CSE 3rd Year, MBA Students">
+                        <div class="form-text">Comma-separated list of specific groups</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="expiryDate" class="form-label">Expiry Date (Optional)</label>
+                            <input type="date" class="form-control" id="expiryDate" name="expiryDate">
+                            <div class="form-text">Leave empty if announcement doesn't expire</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="priority" class="form-label">Priority</label>
+                            <select class="form-select" id="priority" name="priority">
+                                <option value="normal">Normal</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="attachment" class="form-label">Attachment (Optional)</label>
+                        <input type="file" class="form-control" id="attachment" name="attachment" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                        <div class="form-text">Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="sendNotification" name="sendNotification">
+                            <label class="form-check-label" for="sendNotification">
+                                Send email notification to target audience
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Important announcements will be highlighted and emergency announcements will be shown with high priority.
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/announcements" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-1"></i>Publish Announcement
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Guidelines -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Announcement Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h6>Category Types:</h6>
+                        <ul class="list-unstyled">
+                            <li><span class="badge bg-primary">Academic</span> - Exam schedules, course updates</li>
+                            <li><span class="badge bg-success">Event</span> - Campus events, workshops</li>
+                            <li><span class="badge bg-warning">Important</span> - Important notices</li>
+                            <li><span class="badge bg-danger">Emergency</span> - Urgent alerts</li>
+                            <li><span class="badge bg-secondary">General</span> - General information</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h6>Best Practices:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-1"></i> Keep titles clear and concise</li>
+                            <li><i class="fas fa-check text-success me-1"></i> Provide all necessary details</li>
+                            <li><i class="fas fa-check text-success me-1"></i> Set appropriate expiry dates</li>
+                            <li><i class="fas fa-check text-success me-1"></i> Use proper categories</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    <strong>Note:</strong> Emergency announcements should be used only for critical situations requiring immediate attention.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Show/hide specific groups field based on target audience selection
+document.addEventListener('DOMContentLoaded', function() {
+    const targetAudience = document.getElementById('targetAudience');
+    const specificGroupsContainer = document.getElementById('specificGroupsContainer');
+    
+    targetAudience.addEventListener('change', function() {
+        if (this.value === 'specific') {
+            specificGroupsContainer.style.display = 'block';
+        } else {
+            specificGroupsContainer.style.display = 'none';
+        }
+    });
+    
+    // Set default expiry date to 7 days from now
+    const today = new Date();
+    const nextWeek = new Date(today);
+    nextWeek.setDate(today.getDate() + 7);
+    document.getElementById('expiryDate').value = nextWeek.toISOString().split('T')[0];
+});
+</script>

@@ -1,0 +1,152 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Campus Map</h2>
+    <a href="/navigation" class="btn btn-outline-secondary">
+        <i class="fas fa-list me-1"></i>List View
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Interactive Campus Map</h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            The interactive campus map feature is coming soon! For now, please use the list view below to explore campus locations.
+        </div>
+        
+        <!-- Simple grid representation -->
+        <div class="text-center py-4">
+            <i class="fas fa-map-marked-alt fa-5x text-muted mb-3"></i>
+            <h4>Map View Under Development</h4>
+            <p class="text-muted">We're working on an interactive campus map that will show all locations with their coordinates.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Locations List -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">All Campus Locations</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Floor</th>
+                        <th>Coordinates</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% locations.forEach(location => { %>
+                        <tr>
+                            <td><strong><%= location.id %></strong></td>
+                            <td>
+                                <i class="fas fa-<%= 
+                                    location.category === 'academic' ? 'book text-primary' : 
+                                    location.category === 'food' ? 'utensils text-success' : 
+                                    location.category === 'administration' ? 'building text-info' : 
+                                    location.category === 'recreation' ? 'dumbbell text-warning' : 
+                                    location.category === 'student' ? 'users text-secondary' : 
+                                    location.category === 'health' ? 'heartbeat text-danger' : 'map-marker-alt text-dark' 
+                                %> me-2"></i>
+                                <%= location.name %>
+                            </td>
+                            <td>
+                                <span class="badge bg-<%= 
+                                    location.category === 'academic' ? 'primary' : 
+                                    location.category === 'food' ? 'success' : 
+                                    location.category === 'administration' ? 'info' : 
+                                    location.category === 'recreation' ? 'warning' : 
+                                    location.category === 'student' ? 'secondary' : 
+                                    location.category === 'health' ? 'danger' : 'dark' 
+                                %>">
+                                    <%= location.category %>
+                                </span>
+                            </td>
+                            <td><%= location.floor %></td>
+                            <td>(<%= location.coordinates.x %>, <%= location.coordinates.y %>)</td>
+                            <td>
+                                <a href="/navigation/<%= location.id %>" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-info-circle me-1"></i>Details
+                                </a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Legend -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Location Categories Legend</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-book text-primary me-2 fa-lg"></i>
+                    <div>
+                        <strong>Academic</strong><br>
+                        <small class="text-muted">Libraries, Departments</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-utensils text-success me-2 fa-lg"></i>
+                    <div>
+                        <strong>Food & Dining</strong><br>
+                        <small class="text-muted">Cafeterias, Food Courts</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-building text-info me-2 fa-lg"></i>
+                    <div>
+                        <strong>Administration</strong><br>
+                        <small class="text-muted">Offices, Services</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-dumbbell text-warning me-2 fa-lg"></i>
+                    <div>
+                        <strong>Recreation</strong><br>
+                        <small class="text-muted">Sports, Gym, Pool</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-heartbeat text-danger me-2 fa-lg"></i>
+                    <div>
+                        <strong>Health</strong><br>
+                        <small class="text-muted">Medical Services</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-users text-secondary me-2 fa-lg"></i>
+                    <div>
+                        <strong>Student Services</strong><br>
+                        <small class="text-muted">Student Center, Lounges</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

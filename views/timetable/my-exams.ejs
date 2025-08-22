@@ -1,0 +1,198 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Exam Schedule</h2>
+    <a href="/timetable" class="btn btn-outline-secondary">
+        <i class="fas fa-list me-1"></i>All Exams
+    </a>
+</div>
+
+<!-- User Info -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Student Information</h6>
+                <p class="mb-1"><strong>Username:</strong> <%= username %></p>
+                <p class="mb-1"><strong>Branch:</strong> 
+                    <span class="badge bg-info"><%= userBranch.toUpperCase() %></span>
+                </p>
+                <p class="mb-0"><strong>Semester:</strong> 
+                    <span class="badge bg-secondary">Sem <%= userSemester %></span>
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h6>Exam Summary</h6>
+                <p class="mb-1"><strong>Total Exams:</strong> <%= exams.length %></p>
+                <p class="mb-1"><strong>Upcoming:</strong> <%= upcomingExams.length %></p>
+                <p class="mb-0"><strong>Completed:</strong> <%= completedExams.length %></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Exams -->
+<% if (upcomingExams.length > 0) { %>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-calendar-check me-2"></i>
+                Upcoming Exams (<%= upcomingExams.length %>)
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Subject</th>
+                            <th>Venue</th>
+                            <th>Room</th>
+                            <th>Duration</th>
+                            <th>Days Left</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% upcomingExams.forEach(exam => { %>
+                            <tr>
+                                <td>
+                                    <strong><%= new Date(exam.examDate).toLocaleDateString() %></strong><br>
+                                    <small class="text-muted"><%= exam.examTime %></small>
+                                </td>
+                                <td>
+                                    <strong><%= exam.subject %></strong>
+                                    <% if (exam.subjectCode) { %>
+                                        <br><small class="text-muted"><%= exam.subjectCode %></small>
+                                    <% } %>
+                                </td>
+                                <td><%= exam.venue %></td>
+                                <td><%= exam.roomNumber || '-' %></td>
+                                <td><%= exam.duration %> min</td>
+                                <td>
+                                    <span class="badge bg-<%= 
+                                        exam.daysLeft <= 1 ? 'danger' : 
+                                        exam.daysLeft <= 3 ? 'warning' : 'success' 
+                                    %>">
+                                        <%= exam.daysLeft %> day<%= exam.daysLeft !== 1 ? 's' : '' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="/timetable/<%= exam._id %>" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-info-circle me-1"></i>Details
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<% } else { %>
+    <div class="card mb-4">
+        <div class="card-body text-center py-4">
+            <i class="fas fa-calendar-check fa-3x text-muted mb-3"></i>
+            <h4>No upcoming exams</h4>
+            <p class="text-muted">You don't have any exams scheduled in the near future.</p>
+        </div>
+    </div>
+<% } %>
+
+<!-- Completed Exams -->
+<% if (completedExams.length > 0) { %>
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-history me-2"></i>
+                Completed Exams (<%= completedExams.length %>)
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Subject</th>
+                            <th>Venue</th>
+                            <th>Status</th>
+                            <th>Days Ago</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% completedExams.forEach(exam => { %>
+                            <tr>
+                                <td>
+                                    <strong><%= new Date(exam.examDate).toLocaleDateString() %></strong><br>
+                                    <small class="text-muted"><%= exam.examTime %></small>
+                                </td>
+                                <td>
+                                    <strong><%= exam.subject %></strong>
+                                    <% if (exam.subjectCode) { %>
+                                        <br><small class="text-muted"><%= exam.subjectCode %></small>
+                                    <% } %>
+                                </td>
+                                <td><%= exam.venue %></td>
+                                <td>
+                                    <span class="badge bg-success">Completed</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted"><%= exam.daysAgo %> day<%= exam.daysAgo !== 1 ? 's' : '' %> ago</span>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<!-- Study Tips -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-lightbulb me-2"></i>
+            Study Tips
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="text-center">
+                    <i class="fas fa-clock text-primary fa-2x mb-2"></i>
+                    <h6>Time Management</h6>
+                    <small class="text-muted">Plan your study schedule in advance</small>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="text-center">
+                    <i class="fas fa-book text-success fa-2x mb-2"></i>
+                    <h6>Revision</h6>
+                    <small class="text-muted">Regular revision improves retention</small>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="text-center">
+                    <i class="fas fa-heart text-danger fa-2x mb-2"></i>
+                    <h6>Wellness</h6>
+                    <small class="text-muted">Take breaks and stay hydrated</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Options -->
+<div class="text-center mt-4">
+    <a href="/timetable/export?branch=<%= userBranch %>&semester=<%= userSemester %>" 
+       class="btn btn-success me-2">
+        <i class="fas fa-download me-1"></i>Export My Schedule
+    </a>
+    <a href="/timetable/ical?branch=<%= userBranch %>&semester=<%= userSemester %>" 
+       class="btn btn-outline-primary">
+        <i class="fas fa-calendar-alt me-1"></i>Add to Calendar
+    </a>
+</div>

@@ -1,0 +1,169 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Exam Timetable</h2>
+    <div>
+        <a href="/timetable/my-exams" class="btn btn-outline-primary me-2">
+            <i class="fas fa-user me-1"></i>My Exams
+        </a>
+        <a href="/timetable/create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Create Schedule
+        </a>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Branch</label>
+                <select name="branch" class="form-select">
+                    <option value="all" <%= currentFilters.branch === 'all' ? 'selected' : '' %>>All Branches</option>
+                    <% branches.forEach(branch => { %>
+                        <option value="<%= branch %>" <%= currentFilters.branch === branch ? 'selected' : '' %>>
+                            <%= branch.toUpperCase() %>
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Semester</label>
+                <select name="semester" class="form-select">
+                    <option value="all" <%= currentFilters.semester === 'all' ? 'selected' : '' %>>All Semesters</option>
+                    <% semesters.forEach(sem => { %>
+                        <option value="<%= sem %>" <%= currentFilters.semester === sem.toString() ? 'selected' : '' %>>
+                            Semester <%= sem %>
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">&nbsp;</label>
+                <div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter me-1"></i>Apply Filters
+                    </button>
+                    <a href="/timetable" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-sync me-1"></i>Clear
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Export Button -->
+<div class="d-flex justify-content-end mb-4">
+    <a href="/timetable/export?branch=<%= currentFilters.branch || 'all' %>&semester=<%= currentFilters.semester || 'all' %>" 
+       class="btn btn-success">
+        <i class="fas fa-download me-1"></i>Export as CSV
+    </a>
+</div>
+
+<!-- Timetable by Date -->
+<% if (Object.keys(groupedTimetables).length > 0) { %>
+    <% Object.keys(groupedTimetables).sort().forEach(date => { %>
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calendar-day me-2"></i>
+                    <%= new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Subject Code</th>
+                                <th>Branch</th>
+                                <th>Semester</th>
+                                <th>Venue</th>
+                                <th>Room</th>
+                                <th>Duration</th>
+                                <th>Invigilator</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% groupedTimetables[date].forEach(exam => { %>
+                                <tr>
+                                    <td><strong><%= exam.examTime %></strong></td>
+                                    <td>
+                                        <strong><%= exam.subject %></strong>
+                                        <% if (exam.subjectCode) { %>
+                                            <br><small class="text-muted"><%= exam.subjectCode %></small>
+                                        <% } %>
+                                    </td>
+                                    <td><%= exam.subjectCode || '-' %></td>
+                                    <td>
+                                        <span class="badge bg-info"><%= exam.branch.toUpperCase() %></span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">Sem <%= exam.semester %></span>
+                                    </td>
+                                    <td><%= exam.venue %></td>
+                                    <td><%= exam.roomNumber || '-' %></td>
+                                    <td><%= exam.duration %> minutes</td>
+                                    <td><%= exam.invigilator || '-' %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <% }); %>
+<% } else { %>
+    <div class="text-center py-5">
+        <i class="fas fa-calendar fa-3x text-muted mb-3"></i>
+        <h4>No exam schedules found</h4>
+        <p class="text-muted">No exams are scheduled for the selected criteria.</p>
+        <a href="/timetable/create" class="btn btn-primary mt-2">
+            <i class="fas fa-plus me-1"></i>Create Schedule
+        </a>
+    </div>
+<% } %>
+
+<!-- Upcoming Exams Summary -->
+<% if (Object.keys(groupedTimetables).length > 0) { %>
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Quick Summary</h5>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="p-3 border rounded">
+                    <i class="fas fa-calendar-day fa-2x text-primary mb-2"></i>
+                    <h4><%= Object.keys(groupedTimetables).length %></h4>
+                    <small class="text-muted">Exam Days</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="p-3 border rounded">
+                    <i class="fas fa-book fa-2x text-success mb-2"></i>
+                    <h4><%= Object.values(groupedTimetables).flat().length %></h4>
+                    <small class="text-muted">Total Exams</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="p-3 border rounded">
+                    <i class="fas fa-graduation-cap fa-2x text-info mb-2"></i>
+                    <h4><%= new Set(Object.values(groupedTimetables).flat().map(e => e.branch)).size %></h4>
+                    <small class="text-muted">Branches</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="p-3 border rounded">
+                    <i class="fas fa-layer-group fa-2x text-warning mb-2"></i>
+                    <h4><%= new Set(Object.values(groupedTimetables).flat().map(e => e.semester)).size %></h4>
+                    <small class="text-muted">Semesters</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>

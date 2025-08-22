@@ -1,0 +1,75 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Report Found Item</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="itemName" class="form-label">Item Name *</label>
+                            <input type="text" class="form-control" id="itemName" name="itemName" required 
+                                   placeholder="e.g., iPhone, Wallet, Textbook">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Category *</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="books">Books</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="accessories">Accessories</option>
+                                <option value="documents">Documents</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description *</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required 
+                                  placeholder="Describe the item in detail (color, brand, distinctive features...)"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="locationLost" class="form-label">Location Found *</label>
+                            <input type="text" class="form-control" id="locationLost" name="locationLost" required 
+                                   placeholder="e.g., Library, Cafeteria, Room 101">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="dateLost" class="form-label">Date Found *</label>
+                            <input type="date" class="form-control" id="dateLost" name="dateLost" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contactInfo" class="form-label">Your Contact Information *</label>
+                        <input type="text" class="form-control" id="contactInfo" name="contactInfo" required 
+                               placeholder="e.g., Phone number, Email, Room number">
+                        <div class="form-text">How the owner can contact you to claim the item</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Item Photo (Optional)</label>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        <div class="image-preview mt-2"></div>
+                        <div class="form-text">Upload a photo of the found item</div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/lost-found" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane me-1"></i>Report Found Item
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <% if (event.imageUrl) { %>
+                <img src="<%= event.imageUrl %>" class="card-img-top" alt="<%= event.title %>" style="height: 300px; object-fit: cover;">
+            <% } else { %>
+                <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-calendar fa-3x"></i>
+                </div>
+            <% } %>
+            
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge bg-<%= 
+                        event.category === 'academic' ? 'primary' : 
+                        event.category === 'cultural' ? 'success' : 
+                        event.category === 'sports' ? 'danger' : 
+                        event.category === 'workshop' ? 'warning' : 
+                        event.category === 'seminar' ? 'info' : 'secondary' 
+                    %> fs-6">
+                        <%= event.category.toUpperCase() %>
+                    </span>
+                    <small class="text-muted">Created by: <%= event.createdBy.username %></small>
+                </div>
+                
+                <h2 class="card-title"><%= event.title %></h2>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-calendar me-2 text-primary fa-lg"></i>
+                            <div>
+                                <strong>Date & Time</strong><br>
+                                <%= new Date(event.date).toLocaleDateString() %><br>
+                                <%= event.time %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-map-marker-alt me-2 text-danger fa-lg"></i>
+                            <div>
+                                <strong>Venue</strong><br>
+                                <%= event.venue %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Description</h5>
+                    <p class="card-text"><%= event.description %></p>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Organizer</h5>
+                    <p class="card-text"><%= event.organizer %></p>
+                </div>
+
+                <% if (event.registrationLink) { %>
+                    <div class="mb-4">
+                        <h5>Registration</h5>
+                        <a href="<%= event.registrationLink %>" target="_blank" class="btn btn-success">
+                            <i class="fas fa-link me-1"></i>Register Now
+                        </a>
+                    </div>
+                <% } %>
+
+                <div class="d-flex gap-2">
+                    <% if (!event.attendees.some(attendee => attendee._id.toString() === userId)) { %>
+                        <form method="POST" action="/events/<%= event._id %>/rsvp">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check me-1"></i>RSVP
+                            </button>
+                        </form>
+                    <% } else { %>
+                        <span class="badge bg-success fs-6">
+                            <i class="fas fa-check me-1"></i>You're attending!
+                        </span>
+                    <% } %>
+                    
+                    <a href="/events" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Events
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Attendees -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-users me-1"></i>
+                    Attendees (<%= event.attendees.length %>)
+                </h6>
+            </div>
+            <div class="card-body">
+                <% if (event.attendees.length > 0) { %>
+                    <div class="d-flex flex-wrap gap-2">
+                        <% event.attendees.forEach(attendee => { %>
+                            <span class="badge bg-light text-dark">
+                                <i class="fas fa-user me-1"></i><%= attendee.username %>
+                            </span>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <p class="text-muted mb-0">No attendees yet. Be the first to RSVP!</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Event Details Card -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Event Details
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <strong>Category:</strong><br>
+                    <span class="badge bg-<%= 
+                        event.category === 'academic' ? 'primary' : 
+                        event.category === 'cultural' ? 'success' : 
+                        event.category === 'sports' ? 'danger' : 
+                        event.category === 'workshop' ? 'warning' : 
+                        event.category === 'seminar' ? 'info' : 'secondary' 
+                    %>">
+                        <%= event.category %>
+                    </span>
+                </div>
+                
+                <div class="mb-2">
+                    <strong>Created:</strong><br>
+                    <span class="text-muted"><%= new Date(event.createdAt).toLocaleDateString() %></span>
+                </div>
+                
+                <div class="mb-2">
+                    <strong>Last Updated:</strong><br>
+                    <span class="text-muted"><%= new Date(event.updatedAt).toLocaleDateString() %></span>
+                </div>
+                
+                <% if (event.registrationLink) { %>
+                    <div>
+                        <strong>Registration:</strong><br>
+                        <a href="<%= event.registrationLink %>" target="_blank" class="text-decoration-none">
+                            <i class="fas fa-external-link-alt me-1"></i>Open Link
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

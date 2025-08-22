@@ -1,0 +1,216 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="badge bg-<%= 
+                        announcement.category === 'academic' ? 'primary' : 
+                        announcement.category === 'event' ? 'success' : 
+                        announcement.category === 'important' ? 'warning' : 
+                        announcement.category === 'emergency' ? 'danger' : 'secondary' 
+                    %> fs-6">
+                        <%= announcement.category.toUpperCase() %>
+                    </span>
+                    <% if (announcement.priority === 'high') { %>
+                        <span class="badge bg-warning ms-2">HIGH PRIORITY</span>
+                    <% } else if (announcement.priority === 'urgent') { %>
+                        <span class="badge bg-danger ms-2">URGENT</span>
+                    <% } %>
+                </div>
+                <small class="text-muted"><%= new Date(announcement.createdAt).toLocaleDateString() %></small>
+            </div>
+            
+            <div class="card-body">
+                <h2 class="card-title mb-4"><%= announcement.title %></h2>
+                
+                <div class="mb-4">
+                    <p class="card-text" style="white-space: pre-wrap; line-height: 1.6;">
+                        <%= announcement.content %>
+                    </p>
+                </div>
+
+                <% if (announcement.attachmentUrl) { %>
+                    <div class="mb-4">
+                        <h5>Attachment</h5>
+                        <a href="<%= announcement.attachmentUrl %>" target="_blank" class="btn btn-outline-primary">
+                            <i class="fas fa-paperclip me-1"></i>Download Attachment
+                        </a>
+                    </div>
+                <% } %>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-users me-3 text-info fa-lg"></i>
+                            <div>
+                                <strong>Target Audience</strong><br>
+                                <span class="text-muted">
+                                    <%= announcement.targetAudience === 'all' ? 'All Students' : 
+                                        announcement.targetAudience === 'faculty' ? 'Faculty Only' : 
+                                        announcement.targetAudience === 'specific' ? 'Specific Groups' : 'All' %>
+                                    <% if (announcement.specificGroups) { %>
+                                        <br><small>(<%= announcement.specificGroups %>)</small>
+                                    <% } %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-clock me-3 text-success fa-lg"></i>
+                            <div>
+                                <strong>Expiry Date</strong><br>
+                                <span class="text-muted">
+                                    <% if (announcement.expiryDate) { %>
+                                        <%= new Date(announcement.expiryDate).toLocaleDateString() %>
+                                        <% if (new Date(announcement.expiryDate) < new Date()) { %>
+                                            <span class="badge bg-danger ms-2">Expired</span>
+                                        <% } else { %>
+                                            <span class="badge bg-success ms-2">Active</span>
+                                        <% } %>
+                                    <% } else { %>
+                                        No expiry date
+                                    <% } %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="/announcements" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Announcements
+                    </a>
+                    <% if (canEdit) { %>
+                        <a href="/announcements/<%= announcement._id %>/edit" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </a>
+                    <% } %>
+                    <button class="btn btn-outline-info" data-copy="<%= window.location.href %>">
+                        <i class="fas fa-link me-1"></i>Copy Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Announcement Details -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Announcement Details
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Posted By:</strong><br>
+                    <span class="text-muted"><%= announcement.postedBy.username %></span>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Posted On:</strong><br>
+                    <span class="text-muted"><%= new Date(announcement.createdAt).toLocaleString() %></span>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Last Updated:</strong><br>
+                    <span class="text-muted"><%= new Date(announcement.updatedAt).toLocaleString() %></span>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Priority:</strong><br>
+                    <span class="badge bg-<%= 
+                        announcement.priority === 'normal' ? 'secondary' : 
+                        announcement.priority === 'high' ? 'warning' : 'danger' 
+                    %>">
+                        <%= announcement.priority.toUpperCase() %>
+                    </span>
+                </div>
+                
+                <div>
+                    <strong>Category:</strong><br>
+                    <span class="badge bg-<%= 
+                        announcement.category === 'academic' ? 'primary' : 
+                        announcement.category === 'event' ? 'success' : 
+                        announcement.category === 'important' ? 'warning' : 
+                        announcement.category === 'emergency' ? 'danger' : 'secondary' 
+                    %>">
+                        <%= announcement.category.toUpperCase() %>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-bolt me-1"></i>
+                    Quick Actions
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/announcements" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-list me-1"></i>All Announcements
+                    </a>
+                    
+                    <% if (announcement.category === 'academic') { %>
+                        <a href="/timetable" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-calendar me-1"></i>Exam Timetable
+                        </a>
+                    <% } %>
+                    
+                    <% if (announcement.category === 'event') { %>
+                        <a href="/events" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-calendar-alt me-1"></i>Events
+                        </a>
+                    <% } %>
+                    
+                    <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+                        <i class="fas fa-print me-1"></i>Print
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Announcements -->
+        <% if (relatedAnnouncements && relatedAnnouncements.length > 0) { %>
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-link me-1"></i>
+                    Related Announcements
+                </h6>
+            </div>
+            <div class="card-body">
+                <% relatedAnnouncements.forEach(related => { %>
+                    <div class="mb-3 pb-2 border-bottom">
+                        <h6 class="mb-1">
+                            <span class="badge bg-<%= 
+                                related.category === 'academic' ? 'primary' : 
+                                related.category === 'event' ? 'success' : 
+                                related.category === 'important' ? 'warning' : 
+                                related.category === 'emergency' ? 'danger' : 'secondary' 
+                            %> me-1" style="font-size: 0.6em;">
+                                <%= related.category.charAt(0).toUpperCase() %>
+                            </span>
+                            <%= related.title.substring(0, 40) %>...
+                        </h6>
+                        <small class="text-muted d-block mb-1">
+                            <%= new Date(related.createdAt).toLocaleDateString() %>
+                        </small>
+                        <a href="/announcements/<%= related._id %>" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye me-1"></i>View
+                        </a>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>

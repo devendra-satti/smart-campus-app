@@ -1,0 +1,158 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Create Exam Schedule</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="subject" class="form-label">Subject Name *</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required 
+                                   placeholder="e.g., Data Structures, Mathematics">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="subjectCode" class="form-label">Subject Code (Optional)</label>
+                            <input type="text" class="form-control" id="subjectCode" name="subjectCode" 
+                                   placeholder="e.g., CS301, MATH101">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="branch" class="form-label">Branch *</label>
+                            <select class="form-select" id="branch" name="branch" required>
+                                <option value="">Select Branch</option>
+                                <option value="cse">Computer Science</option>
+                                <option value="ece">Electronics</option>
+                                <option value="mech">Mechanical</option>
+                                <option value="civil">Civil</option>
+                                <option value="eee">Electrical</option>
+                                <option value="it">Information Technology</option>
+                                <option value="mba">MBA</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="semester" class="form-label">Semester *</label>
+                            <select class="form-select" id="semester" name="semester" required>
+                                <option value="">Select Semester</option>
+                                <% for(let i = 1; i <= 8; i++) { %>
+                                    <option value="<%= i %>">Semester <%= i %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="examDate" class="form-label">Exam Date *</label>
+                            <input type="date" class="form-control" id="examDate" name="examDate" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="examTime" class="form-label">Exam Time *</label>
+                            <input type="time" class="form-control" id="examTime" name="examTime" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="duration" class="form-label">Duration (minutes) *</label>
+                            <input type="number" class="form-control" id="duration" name="duration" required 
+                                   min="30" max="240" value="180" placeholder="e.g., 180">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="venue" class="form-label">Venue *</label>
+                            <input type="text" class="form-control" id="venue" name="venue" required 
+                                   placeholder="e.g., Main Hall, Block A">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="roomNumber" class="form-label">Room Number (Optional)</label>
+                            <input type="text" class="form-control" id="roomNumber" name="roomNumber" 
+                                   placeholder="e.g., A101, B205">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="invigilator" class="form-label">Invigilator (Optional)</label>
+                            <input type="text" class="form-control" id="invigilator" name="invigilator" 
+                                   placeholder="e.g., Prof. Smith, Dr. Johnson">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="instructions" class="form-label">Special Instructions (Optional)</label>
+                        <textarea class="form-control" id="instructions" name="instructions" rows="3" 
+                                  placeholder="Any special instructions for students..."></textarea>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Please ensure all information is accurate. This schedule will be visible to all students.
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/timetable" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-calendar-plus me-1"></i>Create Schedule
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Reference</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h6>Common Branches:</h6>
+                        <ul class="list-unstyled">
+                            <li><span class="badge bg-info">CSE</span> - Computer Science</li>
+                            <li><span class="badge bg-info">ECE</span> - Electronics</li>
+                            <li><span class="badge bg-info">MECH</span> - Mechanical</li>
+                            <li><span class="badge bg-info">CIVIL</span> - Civil</li>
+                            <li><span class="badge bg-info">EEE</span> - Electrical</li>
+                            <li><span class="badge bg-info">IT</span> - Information Technology</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h6>Typical Durations:</h6>
+                        <ul class="list-unstyled">
+                            <li><span class="badge bg-secondary">2 hours</span> - Quiz/Test</li>
+                            <li><span class="badge bg-secondary">3 hours</span> - Regular Exam</li>
+                            <li><span class="badge bg-secondary">4 hours</span> - Comprehensive Exam</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    <strong>Note:</strong> Please coordinate with the examination cell to avoid scheduling conflicts.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Set default date to today
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('examDate').value = today;
+    
+    // Set default time to 9:00 AM
+    document.getElementById('examTime').value = '09:00';
+});
+</script>

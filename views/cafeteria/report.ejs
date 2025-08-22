@@ -1,0 +1,100 @@
+<%- include('../layout', { title: title, username: username }) %>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Report Queue Status</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="cafeteria" class="form-label">Cafeteria *</label>
+                        <select class="form-select" id="cafeteria" name="cafeteria" required>
+                            <option value="">Select Cafeteria</option>
+                            <option value="main">Main Cafeteria</option>
+                            <option value="north">North Cafeteria</option>
+                            <option value="south">South Cafeteria</option>
+                            <option value="east">East Cafeteria</option>
+                            <option value="west">West Cafeteria</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Queue Status *</label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="">Select Status</option>
+                            <option value="low">Low - Short wait (0-5 minutes)</option>
+                            <option value="medium">Medium - Moderate wait (5-15 minutes)</option>
+                            <option value="high">High - Long wait (15+ minutes)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="estimatedWaitTime" class="form-label">Estimated Wait Time (minutes, optional)</label>
+                        <input type="number" class="form-control" id="estimatedWaitTime" name="estimatedWaitTime" 
+                               min="0" max="120" placeholder="e.g., 10">
+                        <div class="form-text">Enter your best estimate of the wait time in minutes</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Additional Details (optional)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" 
+                                  placeholder="Any additional information about the current situation..."></textarea>
+                        <div class="form-text">e.g., "Rush hour", "Special meal today", "Limited seating available"</div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Your report will help other students plan their meals better. Thank you for contributing!
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/cafeteria" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-1"></i>Submit Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Current Guidelines -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Queue Status Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="text-center">
+                            <div class="display-4 text-success mb-2">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h5>Low</h5>
+                            <p class="text-muted mb-0">0-5 minutes wait<br>Plenty of seating available</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="text-center">
+                            <div class="display-4 text-warning mb-2">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h5>Medium</h5>
+                            <p class="text-muted mb-0">5-15 minutes wait<br>Moderate crowding</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="text-center">
+                            <div class="display-4 text-danger mb-2">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h5>High</h5>
+                            <p class="text-muted mb-0">15+ minutes wait<br>Very crowded, limited seating</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

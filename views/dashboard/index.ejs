@@ -1,0 +1,219 @@
+<%
+// Convert the entire template content to a string for the content variable
+const content = `
+<div class="row">
+    <!-- Statistics Cards -->
+    <div class="col-md-4 mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="card-title">Lost Items This Week</h6>
+                        <h3 class="card-text">${stats.lostItems}</h3>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-search fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="card-title">Upcoming Events</h6>
+                        <h3 class="card-text">${stats.upcomingEvents}</h3>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-calendar fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="card-title">Active Announcements</h6>
+                        <h3 class="card-text">${stats.activeAnnouncements}</h3>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-bullhorn fa-2x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Quick Actions -->
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4 mb-3">
+                        <a href="/lost-found/report-lost" class="btn btn-outline-primary btn-lg p-3 w-100">
+                            <i class="fas fa-search fa-2x mb-2"></i><br>
+                            Report Lost
+                        </a>
+                    </div>
+                    <div class="col-4 mb-3">
+                        <a href="/cafeteria/report" class="btn btn-outline-success btn-lg p-3 w-100">
+                            <i class="fas fa-utensils fa-2x mb-2"></i><br>
+                            Queue Status
+                        </a>
+                    </div>
+                    <div class="col-4 mb-3">
+                        <a href="/events/create" class="btn btn-outline-info btn-lg p-3 w-100">
+                            <i class="fas fa-calendar-plus fa-2x mb-2"></i><br>
+                            Create Event
+                        </a>
+                    </div>
+                    <div class="col-4 mb-3">
+                        <a href="/navigation" class="btn btn-outline-warning btn-lg p-3 w-100">
+                            <i class="fas fa-map-marker-alt fa-2x mb-2"></i><br>
+                            Navigation
+                        </a>
+                    </div>
+                    <div class="col-4 mb-3">
+                        <a href="/timetable" class="btn btn-outline-danger btn-lg p-3 w-100">
+                            <i class="fas fa-clock fa-2x mb-2"></i><br>
+                            Timetable
+                        </a>
+                    </div>
+                    <div class="col-4 mb-3">
+                        <a href="/announcements" class="btn btn-outline-secondary btn-lg p-3 w-100">
+                            <i class="fas fa-bullhorn fa-2x mb-2"></i><br>
+                            Announcements
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cafeteria Queue Status -->
+        ${queueStatus ? `
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Current Cafeteria Queue</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6>${queueStatus.cafeteria.toUpperCase()} Cafeteria</h6>
+                        <span class="badge bg-${queueStatus.status === 'high' ? 'danger' : queueStatus.status === 'medium' ? 'warning' : 'success'}">
+                            ${queueStatus.status.toUpperCase()}
+                        </span>
+                        ${queueStatus.estimatedWaitTime ? `<span class="ms-2 text-muted">(~${queueStatus.estimatedWaitTime} min wait)</span>` : ''}
+                    </div>
+                    <div class="flex-shrink-0">
+                        <a href="/cafeteria" class="btn btn-sm btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+                ${queueStatus.description ? `<p class="mt-2 mb-0 text-muted">${queueStatus.description}</p>` : ''}
+            </div>
+        </div>
+        ` : ''}
+
+        <!-- Upcoming Exams -->
+        ${upcomingExams && upcomingExams.length > 0 ? `
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Upcoming Exams</h5>
+            </div>
+            <div class="card-body">
+                ${upcomingExams.map(exam => `
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                        <div>
+                            <strong>${exam.subject}</strong><br>
+                            <small class="text-muted">
+                                ${exam.examDate.toLocaleDateString()} at ${exam.examTime} | 
+                                ${exam.venue}
+                            </small>
+                        </div>
+                        <span class="badge bg-secondary">${exam.branch.toUpperCase()}</span>
+                    </div>
+                `).join('')}
+                <div class="text-center mt-3">
+                    <a href="/timetable" class="btn btn-sm btn-outline-primary">View All Exams</a>
+                </div>
+            </div>
+        </div>
+        ` : ''}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-md-4">
+        <!-- Upcoming Events -->
+        ${upcomingEvents && upcomingEvents.length > 0 ? `
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Upcoming Events</h5>
+            </div>
+            <div class="card-body">
+                ${upcomingEvents.map(event => `
+                    <div class="mb-3 pb-2 border-bottom">
+                        <h6 class="mb-1">${event.title}</h6>
+                        <p class="mb-1 text-muted small">
+                            <i class="fas fa-calendar me-1"></i>
+                            ${event.date.toLocaleDateString()} at ${event.time}
+                        </p>
+                        <p class="mb-1 text-muted small">
+                            <i class="fas fa-map-marker-alt me-1"></i>
+                            ${event.venue}
+                        </p>
+                        <a href="/events/${event._id}" class="btn btn-sm btn-outline-primary mt-1">Details</a>
+                    </div>
+                `).join('')}
+                <div class="text-center">
+                    <a href="/events" class="btn btn-sm btn-outline-primary">View All Events</a>
+                </div>
+            </div>
+        </div>
+        ` : ''}
+
+        <!-- Recent Announcements -->
+        ${activeAnnouncements && activeAnnouncements.length > 0 ? `
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Announcements</h5>
+            </div>
+            <div class="card-body">
+                ${activeAnnouncements.map(announcement => `
+                    <div class="mb-3 pb-2 border-bottom">
+                        <h6 class="mb-1">${announcement.title}</h6>
+                        <p class="mb-1 text-muted small">
+                            <span class="badge bg-${announcement.priority === 'high' ? 'danger' : announcement.priority === 'medium' ? 'warning' : 'secondary'} me-1">
+                                ${announcement.priority}
+                            </span>
+                            ${announcement.content.substring(0, 100)}...
+                        </p>
+                        <a href="/announcements/${announcement._id}" class="btn btn-sm btn-outline-secondary mt-1">Read More</a>
+                    </div>
+                `).join('')}
+                <div class="text-center">
+                    <a href="/announcements" class="btn btn-sm btn-outline-secondary">View All</a>
+                </div>
+            </div>
+        </div>
+        ` : ''}
+    </div>
+</div>
+`;
+%>
+
+<%- include('../layout', { 
+    title: title, 
+    username: username,
+    content: content 
+}) %>

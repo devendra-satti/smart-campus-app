@@ -87,6 +87,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    font-size: 1.05rem; /* Slightly larger base font size for better readability */
 }
 
 main {
@@ -112,6 +113,17 @@ h6 {
     margin-bottom: var(--spacing-md);
 }
 
+h1 {
+    font-size: 2.5rem;
+    letter-spacing: -0.02em; /* Tighter spacing for large headlines */
+}
+
+/* Make text selection match the primary color */
+::selection {
+    background: var(--primary-light);
+    color: white;
+}
+
 /* ========================================================================= */
 /* 3. Navigation Bar */
 /* ========================================================================= */
@@ -125,6 +137,7 @@ h6 {
     font-weight: 800;
     font-size: 1.5rem;
     color: white !important;
+    letter-spacing: -0.05em; /* Tighter spacing for the brand name */
 }
 
 .navbar-nav .nav-link {
@@ -194,7 +207,7 @@ h6 {
     border: none;
     padding: 0.75rem 1.5rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.025em; /* Tighter letter spacing for buttons */
 }
 
 .btn-primary {
@@ -221,6 +234,19 @@ h6 {
     transform: translateY(-2px);
 }
 
+.btn-ghost {
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    background: transparent;
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    border-color: white;
+}
+
 .form-control,
 .form-select {
     border-radius: var(--radius-lg);
@@ -233,7 +259,7 @@ h6 {
 
 .form-control:focus,
 .form-select:focus {
-    border-color: var(--primary-color);
+    border-color: var(--primary-light); /* Added subtle color change on focus */
     box-shadow: 0 0 0 4px rgba(90, 103, 216, 0.15);
     background: white;
 }
@@ -347,6 +373,36 @@ h6 {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--gray-500);
+}
+
+/* New custom styles */
+.highlight-card {
+    position: relative;
+    background: transparent;
+    padding: var(--spacing-sm);
+    box-shadow: none; /* Remove default shadow for the pseudo-element to shine */
+}
+
+.highlight-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    z-index: -1;
+    transition: opacity var(--transition-normal);
+    opacity: 0.1; /* Start with a subtle glow */
+}
+
+.highlight-card:hover::before {
+    opacity: 0.3; /* Increase opacity on hover */
+}
+
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+    color: white;
+    padding: 5rem var(--spacing-xl);
+    text-align: center;
 }
 
 /* ========================================================================= */
